@@ -1,16 +1,16 @@
 package com.cocktailforeteller.application.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,55 +18,65 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Getter
 @Entity
-@Table(name = "drink")
+@Builder
 @NoArgsConstructor
+@Table(name = "drink")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Drink {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private UUID id;
+
+	@Column(name = "cocktail_name", nullable = false)
 	private String name;
-	private String alternateName;
-	private String category;
-	private String alcoholic;
+
+	@Column(name = "bartender_name")
+	private String bartender;
+
+	@Column(name = "barcompany")
+	private String barName;
+
+	private String location;
+
+	@Column(nullable = false)
+	private String ingredients;
+	private String garnish;
 	private String glassType;
-	private String instruction;
+	private String preparation;
+	private String notes;
 	private String drinkThumb;
 
-	@OneToMany(mappedBy = "drink")
-	private final List<Ingredient> ingredient = new ArrayList<>();
-
-	@OneToMany(mappedBy = "drink")
-	private final List<Measure> measure = new ArrayList<>();
-
 	public Drink(
-			Long id,
-			String idDrink,
+			UUID id,
 			String name,
-			String alternateName,
-			String category,
-			String alcoholic,
+			String bartender,
+			String barName,
+			String location,
+			String ingredients,
+			String garnish,
 			String glassType,
-			String instruction,
+			String preparation,
+			String notes,
 			String drinkThumb
 	) {
-
 		guardIsValidName( name );
-		guardIsValidAlternateName( alternateName );
-		guardIsValidCategory( category );
-		guardIsValidAlcoholic( alcoholic );
+		guardIsValidAlternateName( garnish );
+		guardIsValidCategory( notes );
+		guardIsValidIngredient( ingredients );
 		guardIsValidGlassType( glassType );
-		guardIsValidInstruction( instruction );
+		guardIsValidInstruction( preparation );
 		guardIsValidDrinkThumb( drinkThumb );
 
 		this.id = id;
 		this.name = name;
-		this.alternateName = alternateName;
-		this.category = category;
-		this.alcoholic = alcoholic;
+		this.bartender = bartender;
+		this.barName = barName;
+		this.location = location;
+		this.ingredients = ingredients;
+		this.garnish = garnish;
 		this.glassType = glassType;
-		this.instruction = instruction;
+		this.preparation = preparation;
+		this.notes = notes;
 		this.drinkThumb = drinkThumb;
 	}
 
@@ -88,9 +98,9 @@ public class Drink {
 		}
 	}
 
-	private void guardIsValidAlcoholic(String alcoholic) {
-		if (Objects.isNull( alcoholic ) || alcoholic.trim().isEmpty()) {
-			throw new IllegalArgumentException( "alcoholic cannot be null or empty!" );
+	private void guardIsValidIngredient(String ingredients) {
+		if (Objects.isNull( ingredients ) || ingredients.trim().isEmpty()) {
+			throw new IllegalArgumentException( "ingredient cannot be null or empty!" );
 		}
 	}
 
